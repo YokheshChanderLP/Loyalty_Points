@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoyaltyPoints - Tier-Based Retail Loyalty Points Engine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <div>
+        <h1>LoyaltyPoints</h1>
+        <p>Tier-Based Retail Loyalty Points Engine</p>
+    </div>
+    <div id="settings-info" class="settings-info"></div>
+</header>
+
+<nav>
+    <button class="tab-btn active" data-tab="tab-customers">Customers</button>
+    <button class="tab-btn" data-tab="tab-purchases">Purchases</button>
+    <button class="tab-btn" data-tab="tab-tiers">Tiers</button>
+</nav>
+
+<main>
+    <!-- ===================== CUSTOMERS ===================== -->
+    <section id="tab-customers" class="tab active">
+        <div class="card">
+            <h2 id="customer-form-title">Add Customer</h2>
+            <form id="customer-form" autocomplete="off">
+                <input type="hidden" id="customer-id">
+                <div class="grid">
+                    <label>Name *
+                        <input type="text" id="customer-name" maxlength="100" required>
+                    </label>
+                    <label>Email *
+                        <input type="email" id="customer-email" maxlength="150" required>
+                    </label>
+                    <label>Phone
+                        <input type="text" id="customer-phone" maxlength="20">
+                    </label>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn primary" id="customer-submit">Save Customer</button>
+                    <button type="button" class="btn" id="customer-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Customers</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Tier</th>
+                        <th>Balance</th><th>Lifetime</th><th>Next Tier</th><th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="customers-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== PURCHASES ===================== -->
+    <section id="tab-purchases" class="tab">
+        <div class="card">
+            <h2>New Purchase</h2>
+            <form id="purchase-form" autocomplete="off">
+                <div class="grid">
+                    <label>Customer *
+                        <select id="purchase-customer" required></select>
+                    </label>
+                    <label>Amount (&#8377;) *
+                        <input type="number" id="purchase-amount" min="0.01" step="0.01" required>
+                    </label>
+                    <label>Points to redeem
+                        <input type="number" id="purchase-redeem" min="0" step="1" value="0">
+                    </label>
+                    <label>Description
+                        <input type="text" id="purchase-description" maxlength="255">
+                    </label>
+                </div>
+                <div class="actions">
+                    <button type="button" class="btn" id="purchase-preview-btn">Preview</button>
+                    <button type="submit" class="btn primary">Record Purchase</button>
+                </div>
+            </form>
+            <div id="preview-box" class="preview hidden"></div>
+        </div>
+
+        <div class="card">
+            <div class="row-between">
+                <h2>Purchases</h2>
+                <label class="inline">Filter by customer
+                    <select id="purchase-filter"></select>
+                </label>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th><th>Date</th><th>Customer</th><th>Amount</th><th>Tier / Disc.</th>
+                        <th>Redeemed</th><th>Paid</th><th>Earned</th><th>Status</th><th>Note</th><th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="purchases-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== TIERS ===================== -->
+    <section id="tab-tiers" class="tab">
+        <div class="card">
+            <h2 id="tier-form-title">Add Tier</h2>
+            <form id="tier-form" autocomplete="off">
+                <input type="hidden" id="tier-id">
+                <div class="grid">
+                    <label>Name *
+                        <input type="text" id="tier-name" maxlength="30" required>
+                    </label>
+                    <label>Minimum lifetime points *
+                        <input type="number" id="tier-min" min="0" step="1" required>
+                    </label>
+                    <label>Discount % *
+                        <input type="number" id="tier-discount" min="0" max="100" step="0.01" required>
+                    </label>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn primary">Save Tier</button>
+                    <button type="button" class="btn" id="tier-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Tiers</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr><th>ID</th><th>Name</th><th>Min. Lifetime Points</th><th>Discount</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="tiers-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- ===================== POINTS HISTORY MODAL ===================== -->
+<div id="history-modal" class="modal hidden">
+    <div class="modal-content">
+        <div class="row-between">
+            <h2 id="history-title">Points History</h2>
+            <button class="btn" id="history-close">Close</button>
+        </div>
+        <div id="history-summary" class="history-summary"></div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr><th>Date</th><th>Type</th><th>Points</th><th>Balance After</th><th>Description</th></tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
